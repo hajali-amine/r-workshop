@@ -1,6 +1,10 @@
-save_pdf <- function(t, pdf_name) {
+library(gridExtra)
+
+path_without_filename <- "C:/Users/Asus TUF/Desktop/R/Distributions/pdfs/"
+
+save_barplot_pdf <- function(t, pdf_name) {
     path <- paste(
-        "C:/Users/Asus TUF/Desktop/R/Distributions/pdfs/",
+        path_without_filename,
         pdf_name,
         ".pdf",
         sep = ""
@@ -10,15 +14,15 @@ save_pdf <- function(t, pdf_name) {
     dev.off()
 }
 
-X <- 0:20
+x <- 0:20
 
 # Binomial Distribution
 
 # Task I & II
-P <- dbinom(x = X, size = 20, prob = 0.1)
-save_pdf(P, "dbinom") # plot of the Proba. Density Function
-F <- pbinom(q = X, size = 20, prob = 0.1)
-save_pdf(F, "pbinom") # plot of the Cumulative Distribution Function
+p <- dbinom(x = x, size = 20, prob = 0.1)
+save_barplot_pdf(p, "dbinom") # plot of the Proba. Density Function
+f <- pbinom(q = x, size = 20, prob = 0.1)
+save_barplot_pdf(f, "pbinom") # plot of the Cumulative Distribution Function
 
 # Task III
 r <- rbinom(n = 1000, size = 20, prob = 0.1)
@@ -35,17 +39,95 @@ barplot(t)
 # Second method:
 # Use the table() function and divide the result by 1000
 t <- table(r) / 1000
-save_pdf(t, "rbinom")
+save_barplot_pdf(t, "rbinom")
 
 # Poisson Distribution
 
 # Task I & II
-P <- dpois(x = X, lambda = 5)
-save_pdf(P, "dpois") # plot of the Proba. Density Function
-F <- ppois(q = X, lambda = 5)
-save_pdf(F, "ppois") # plot of the Cumulative Distribution Function
+p <- dpois(x = x, lambda = 5)
+save_barplot_pdf(p, "dpois") # plot of the Proba. Density Function
+f <- ppois(q = x, lambda = 5)
+save_barplot_pdf(f, "ppois") # plot of the Cumulative Distribution Function
 
 # Task III
 r <- rpois(n = 1000, lambda = 5)
 t <- table(r) / 1000
-save_pdf(t, "rpois")
+save_barplot_pdf(t, "rpois")
+
+# Normal Distribution
+
+# Task I
+x <- c(-3, 0.1, 3)
+d1 <- dnorm(x = x, mean = 0, sd = 1)
+d05 <- dnorm(x = x, mean = 0, sd = 0.5)
+d101 <- dnorm(x = x, mean = 0, sd = 0.1)
+
+d1_curve <- function(x) {
+    dnorm(x = x, mean = 0, sd = 1)
+}
+d05_curve <- function(x) {
+    dnorm(x = x, mean = 0, sd = 0.5)
+}
+d01_curve <- function(x) {
+    dnorm(x = x, mean = 0, sd = 0.1)
+}
+
+pdf(file = paste(path_without_filename, "dnorm.pdf", sep = ""))
+curve(d01_curve, from = -2, to = 2, ylab = "N(x)", col = 2)
+curve(d05_curve, from = -2, to = 2, col = 3, add = TRUE)
+curve(d1_curve, from = -2, to = 2, col = 4, add = TRUE)
+dev.off()
+
+# Task II
+x1 <- rnorm(x)
+x05 <- rnorm(x, sd = 0.5)
+x01 <- rnorm(x, sd = 0.1)
+
+# Task III
+m <- matrix(
+    round(
+        pnorm(seq(0, 3.09, by = 0.01)),
+        digits = 4
+    ),
+    ncol = 10, nrow = 31, byrow = TRUE
+)
+values <- data.frame(m)
+pdf(paste(path_without_filename, "pnorm_table.pdf"), height = 11, width = 8)
+grid.table(values, rows = seq(0, 3, by = .1), cols = seq(0, .09, by = .01))
+dev.off()
+
+# Chi-square Distribution
+
+# Task I
+x <- c(-3, 0.1, 3)
+d5 <- dchisq(x = x, df = 5)
+d10 <- dchisq(x = x, df = 10)
+
+d5_curve <- function(x) {
+    dchisq(x = x, df = 5)
+}
+d10_curve <- function(x) {
+    dchisq(x = x, df = 10)
+}
+
+pdf(paste(path_without_filename, "dchisq.pdf"))
+curve(d5_curve, from = 0, to = 20, ylab = "Dchisq", col = 2)
+curve(d10_curve, from = 0, to = 20, col = 3, add = TRUE)
+dev.off()
+
+# Task II
+x5 <- rchisq(x, df = 5)
+x10 <- rchisq(x, df = 10)
+
+# Task III
+m <- matrix(
+    round(
+        pchisq(seq(0, 3.09, by = 0.01), df = 5),
+        digits = 4
+    ),
+    ncol = 10, nrow = 31, byrow = TRUE
+)
+values <- data.frame(m)
+pdf(paste(path_without_filename, "pchisq_table.pdf"), height = 11, width = 8)
+grid.table(values, rows = seq(0, 3, by = .1), cols = seq(0, .09, by = .01))
+dev.off()
