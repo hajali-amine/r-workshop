@@ -1,5 +1,3 @@
-library(gridExtra)
-
 path_without_filename <- "C:/Users/Asus TUF/Desktop/R/Distributions/pdfs/"
 
 save_barplot_pdf <- function(t, pdf_name) {
@@ -14,11 +12,25 @@ save_barplot_pdf <- function(t, pdf_name) {
     dev.off()
 }
 
-x <- 0:20
+save_value_table_pdf <- function(m, pdf_name) {
+    values <- data.frame(m)
+    pdf(
+        paste(path_without_filename, pdf_name, "_table.pdf", sep = ""),
+        height = 11,
+        width = 8
+    )
+    gridExtra::grid.table(
+        values,
+        rows = seq(0, 3, by = .1),
+        cols = seq(0, .09, by = .01)
+    )
+    dev.off()
+}
 
 # Binomial Distribution
 
 # Task I & II
+x <- 0:20
 p <- dbinom(x = x, size = 20, prob = 0.1)
 save_barplot_pdf(p, "dbinom") # plot of the Proba. Density Function
 f <- pbinom(q = x, size = 20, prob = 0.1)
@@ -44,6 +56,7 @@ save_barplot_pdf(t, "rbinom")
 # Poisson Distribution
 
 # Task I & II
+x <- 0:20
 p <- dpois(x = x, lambda = 5)
 save_barplot_pdf(p, "dpois") # plot of the Proba. Density Function
 f <- ppois(q = x, lambda = 5)
@@ -91,10 +104,7 @@ m <- matrix(
     ),
     ncol = 10, nrow = 31, byrow = TRUE
 )
-values <- data.frame(m)
-pdf(paste(path_without_filename, "pnorm_table.pdf"), height = 11, width = 8)
-grid.table(values, rows = seq(0, 3, by = .1), cols = seq(0, .09, by = .01))
-dev.off()
+save_value_table_pdf(m, "pnorm")
 
 # Chi-square Distribution
 
@@ -127,7 +137,4 @@ m <- matrix(
     ),
     ncol = 10, nrow = 31, byrow = TRUE
 )
-values <- data.frame(m)
-pdf(paste(path_without_filename, "pchisq_table.pdf"), height = 11, width = 8)
-grid.table(values, rows = seq(0, 3, by = .1), cols = seq(0, .09, by = .01))
-dev.off()
+save_value_table_pdf(m, "pchisq")
